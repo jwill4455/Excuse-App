@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -51,6 +53,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
+    get(Uri(
+      host: "pub.dev",
+      scheme: "https",
+      pathSegments: ["packages", "https", "install"],
+    ));
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
