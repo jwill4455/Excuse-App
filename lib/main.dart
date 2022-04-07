@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  String _answer = "";
+  List<Map> _excuses = [];
 
   void _incrementCounter() async {
     final answer = await get(Uri(
@@ -47,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
       pathSegments: ["v1", "excuse"],
     ));
 
-    _answer = answer.body;
+    _excuses = (jsonDecode(answer.body) as List).cast();
 
     answer.body;
 
@@ -77,7 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            Text(_answer),
+            for(final excuse in _excuses)
+            Card(
+                child: Text(excuse['excuse']),
+            ),
           ],
         ),
       ),
