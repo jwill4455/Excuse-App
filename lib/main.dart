@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ExcuseApp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'ExcuseApp Home Page'),
     );
   }
 }
@@ -34,11 +34,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
   List<Map> _excuses = [];
 
-  void _incrementCounter() async {
+
+  Future<void> _fetchData() async {
     final answer = await get(Uri(
       host: "excuser.herokuapp.com",
       scheme: "https",
@@ -47,11 +47,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _excuses = (jsonDecode(answer.body) as List).cast();
 
-    answer.body;
+    setState(() {});
+  }
 
-    setState(() {
-      _counter++;
-    });
+  @override
+  void initState() {
+    _fetchData();
+
+    super.initState();
   }
 
   @override
@@ -64,28 +67,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
             for (final excuse in _excuses)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                      excuse['excuse'],
-                      style: Theme.of(context).textTheme.headline6
-                  ),
+                  child: Text(excuse['excuse'],
+                      style: Theme.of(context).textTheme.headline6),
                 ),
               ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
