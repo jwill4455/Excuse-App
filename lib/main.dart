@@ -71,8 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(excuse['excuse'],
-                      style: Theme.of(context).textTheme.headline6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("category: ${excuse['category']}"),
+                      Text(excuse['excuse'],
+                          style: Theme.of(context).textTheme.headline6),
+                    ],
+                  ),
                 ),
               ),
           ],
