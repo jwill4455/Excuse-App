@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'ExcuseApp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -41,6 +42,11 @@ class _MyHomePageState extends State<MyHomePage> {
   String _translatedText = "";
 
   Future<void> _fetchData() async {
+
+    _translatedText = "";
+    _excuses = [];
+    setState(() {});
+
     final answer = await get(Uri(
       host: "excuser.herokuapp.com",
       scheme: "https",
@@ -64,8 +70,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+              onPressed:() {},
+              icon: const Icon(Icons.refresh),
+          )
+        ],
       ),
-      body: ListView(
+      body: _excuses.isEmpty
+          ? const Center(
+        child: CircularProgressIndicator(),
+      )
+      : ListView(
         children: <Widget>[
           for (final excuse in _excuses)
             Column(
@@ -73,15 +89,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("category: ${excuse['category']}"),
-                        Text(
-                            excuse['excuse'],
-                            style: Theme.of(context).textTheme.headline6
-                        ),
-                      ],
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("category: ${excuse['category']}"),
+                          Text(
+                              excuse['excuse'],
+                              style: Theme.of(context).textTheme.headline6
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -89,9 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                        _translatedText,
-                        style: Theme.of(context).textTheme.headline6
+                    child: Center(
+                      child: Text(
+                          _translatedText,
+                          style: Theme.of(context).textTheme.headline6
+                      ),
                     ),
                   ),
                 ),
