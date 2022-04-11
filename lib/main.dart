@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-              onPressed:() {},
+              onPressed: _fetchData,
               icon: const Icon(Icons.refresh),
           )
         ],
