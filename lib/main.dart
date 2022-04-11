@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart';
+import 'package:translator/translator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,9 +35,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  final translator = GoogleTranslator();
   List<Map> _excuses = [];
 
+  String _translatedText = "";
 
   Future<void> _fetchData() async {
     final answer = await get(Uri(
@@ -63,31 +65,52 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            for (final excuse in _excuses)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("category: ${excuse['category']}"),
-                      Text(excuse['excuse'],
-                          style: Theme.of(context).textTheme.headline6),
-                    ],
+      body: ListView(
+        children: <Widget>[
+          for (final excuse in _excuses)
+            Column(
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("category: ${excuse['category']}"),
+                        Text(
+                            excuse['excuse'],
+                            style: Theme.of(context).textTheme.headline6
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
+                if(_translatedText.isNotEmpty)
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                        _translatedText,
+                        style: Theme.of(context).textTheme.headline6
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () {
+          if(_excuses.isNotEmpty){
+            final _excuse = _excuses.first;
+            translator.translate(_excuse['excuse'], to: 'tr').then((_translate){
+              _translatedText = _translate.text;
+              setState(() {});
+            });
+          }
+        },
+        tooltip: 'Translate',
+        child: const Icon(Icons.translate),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
